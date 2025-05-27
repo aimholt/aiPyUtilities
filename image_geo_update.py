@@ -3,7 +3,7 @@
 """
 from aipy.img_extensions import get_file_list, get_geo_from_gpx, get_img_timestamp
 
-PATH='C:\\Users\\Andreas\\Desktop\\Bilder&Tracklog'
+PATH='C:\\Users\\Andreas\\projects\\TestData\\pictures&tracklog'
 TZONE='Europe/Berlin'
 
 ### making list of files in working directory
