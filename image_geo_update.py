@@ -22,7 +22,7 @@ for file in gpx_file_list:
     for item in get_geo_from_gpx(file):
         coord_list.append(item)        
 coord_list.sort(key=lambda x: x['dt'], reverse=False)
-        
+print(f'number of geo entries: {len(coord_list)} - oldest: {coord_list[0]['dt']} - newest: {coord_list[len(coord_list)-1]['dt']}')
 ### for each file open and read the timestamp
 count=0
 for file in img_file_list:
