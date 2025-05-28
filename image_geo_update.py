@@ -1,21 +1,28 @@
 """
     program to update the geo coordinates in an .jpg image file
 """
-from aipy.img_extensions import get_file_list, get_geo_from_gpx, get_img_timestamp
+from aipy.img_extensions import get_file_list, get_geo_from_gpx, get_img_timestamp, print_exif_data
 
-PATH='C:\\Users\\Andreas\\projects\\TestData\\pictures&tracklog'
+import sys
+
+if sys.platform.startswith('linux'):
+    DIR='/home/aimholt/projects/TestData/pictures_tracklogs'
+elif sys.platform.startswith('win'):
+    DIR='C:\\Users\\Andreas\\projects\\TestData\\pictures_tracklogs'
+
 TZONE='Europe/Berlin'
 
 ### making list of files in working directory
-img_file_list=get_file_list(path=PATH,pattern='^.*\\.(jpg)$')
-gpx_file_list=get_file_list(path=PATH,pattern='^.*\\.(gpx)$')
+img_file_list=get_file_list(dir=DIR,m_pattern='^.*\\.(jpg)$')
+gpx_file_list=get_file_list(dir=DIR,m_pattern='^.*\\.(gpx)$')
 
-### making list of geo coordinates from multiple gpx files 
+### making list of geo coordinates from multiple gpx files sorted by time 
 coord_list=[]
 for file in gpx_file_list:
     for item in get_geo_from_gpx(file):
-        coord_list.append(item)
-
+        coord_list.append(item)        
+coord_list.sort(key=lambda x: x['dt'], reverse=False)
+        
 ### for each file open and read the timestamp
 count=0
 for file in img_file_list:
@@ -23,18 +30,18 @@ for file in img_file_list:
     coord_dt_before=None
     coord_dt_after=None
     img_dt=     get_img_timestamp(file)
-    img_name=   file.lstrip(PATH)
+    img_name=   file.lstrip(DIR)
 
     ### for each image find the best time matches in geo coordinates
     count+=1
     for coord in coord_list:
-        if      coord['time'] < img_dt:
-            coord_dt_before=coord['time']
-        elif    coord['time'] == img_dt:
+        if      coord['dt'] < img_dt:
+            coord_dt_before=coord['dt']
+        elif    coord['dt'] == img_dt:
             found=True
             break
-        elif    coord['time'] > img_dt:
-            coord_dt_after=coord['time']
+        elif    coord['dt'] > img_dt:
+            coord_dt_after=coord['dt']
             break
 
         ### handling of time matches and no time matches
@@ -43,7 +50,7 @@ for file in img_file_list:
     if found:
         print(
             f'{count:>2}. {img_name} ({img_dt}) - ' 
-            f'exact:  COORD({coord['time'].time()}; LAT: {coord['lat']}; LON: {coord['lon']})'
+            f'exact:  COORD({coord['dt'].time()}; LAT: {coord['lat']}; LON: {coord['lon']})'
             )
         found=False
     elif not found:
