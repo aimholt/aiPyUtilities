@@ -63,6 +63,7 @@ def get_file_list(dir, m_pattern=''):
     """
     p=re.compile(m_pattern,re.IGNORECASE)
     fnames=os.listdir(dir)
+    fnames.sort()
     path_list = []
     for fname in fnames:
         path=os.path.join(dir,fname)

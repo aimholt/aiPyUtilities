@@ -31,8 +31,11 @@ for file in img_file_list:
     coord_dt_after=None
     img_dt=     get_img_timestamp(file)
     img_name=   file.lstrip(DIR)
+    max_time_diff=30
 
     ### for each image find the best time matches in geo coordinates
+    time_diff_before=max_time_diff
+    time_diff_after=max_time_diff
     count+=1
     for coord in coord_list:
         if      coord['dt'] < img_dt:
@@ -44,23 +47,28 @@ for file in img_file_list:
             coord_dt_after=coord['dt']
             break
 
-        ### handling of time matches and no time matches
-    time_diff_before=None
-    time_diff_after=None
+    ### handling of time matches and no time matches
     if found:
         print(
-            f'{count:>2}. {img_name} ({img_dt}) - ' 
-            f'exact:  COORD({coord['dt'].time()}; LAT: {coord['lat']}; LON: {coord['lon']})'
+            f'{img_name:<20s} IMG({img_dt.date()} {img_dt.time()}) - ' 
+            f'COORD({coord['dt'].date()} {coord['dt'].time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f};  0s)'
             )
         found=False
     elif not found:
-        if coord_dt_before != None:
+        if  coord_dt_before != None:
             time_diff_before = (img_dt - coord_dt_before).seconds
-        if coord_dt_after != None:
+        if  coord_dt_after != None:
             time_diff_after = (coord_dt_after - img_dt).seconds
-        print(
-            f'{count:>2}. {img_name} ({img_dt.date()} {img_dt.time()}) -' 
-            f' vor: {coord_dt_before} (-{time_diff_before}s) /'
-            f' nach: {coord_dt_after} (+{time_diff_after}s)'
+        if  (time_diff_before < max_time_diff or time_diff_after  < max_time_diff)  and \
+            time_diff_before <= time_diff_after:
+            print(
+                f'{img_name:<20s} IMG({img_dt.date()} {img_dt.time()}) - '
+                f'COORD({coord_dt_before.date()} {coord_dt_before.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; -{time_diff_before}s)'
+                )
+        elif(time_diff_before < max_time_diff or time_diff_after  < max_time_diff)  and \
+            time_diff_before > time_diff_after:
+            print(
+                f'{img_name:<20s} IMG({img_dt.date()} {img_dt.time()}) - '
+                f'COORD({coord_dt_after.date()} {coord_dt_after.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; +{time_diff_after}s)'
             )
 exit()
