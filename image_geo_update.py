@@ -13,7 +13,7 @@ elif sys.platform.startswith('win'):
     DIR='C:\\Users\\Andreas\\projects\\TestData\\pictures_tracklogs'
 
 parser=ArgumentParser(
-    prog='image GEO EXIF change',
+    prog='image_geo_update',
     description='backend-tool to update image geo data from tracking tools')
 group1=parser.add_mutually_exclusive_group(required=True)
 group1.add_argument('-i', '--image',
@@ -24,9 +24,9 @@ group1.add_argument('-a', '--all',
             action='store_true')
 parser.add_argument('-e', '--exif',
             help='print current exif data',
-            action='store_true', default=False)
+            action='store_true')
 parser.add_argument('-s', '--save',
-            help='save the changes to images',
+            help='save changes to images',
             action='store_true', default=False)
 parser.add_argument('-d', '--directory',
             help='select working directory, current is: '+DIR,
@@ -57,7 +57,7 @@ print(f'number of geo entries found: {len(coord_list)} - oldest: {coord_list[0][
 count=0
 for file in img_file_list:
     if args.exif:
-        print("\n>>>>>>>>>>>>>>>>>>>>>>>>> EXIF data of image: "+file)
+        print("\n>>>>>>>>>>>>>>>>>>>>>>>>> EXIF data of image: "+args.image)
         print_exif_data(os.path.join(DIR,file))
 
     found=False
