@@ -1,4 +1,3 @@
-import requests
 import urllib3
 import xml.etree.ElementTree as ET
 import hashlib
@@ -7,15 +6,17 @@ import requests
 import json
 import pandas as pd
 import os
+import sys
 
 ROUTER_URL =    "http://xyzrouter.internal"
 USER =          "aimholt"  # Anmeldename z. B. fritz1234
 PASSWORD =      "Imh2And-01"  # Anmeldekennwort
 NOT_VALID_SID = "0000000000000000" # immer ungueltig
-#DATA_DIR =      "/home/aimholt/projects/TestData/"
-DATA_DIR =      "C:\\Users\\Andreas\\projects\\TestData"
+DATA_DIR =  "/home/aimholt/projects/TestData"
+if sys.platform != 'linux': 
+    DATA_DIR =  "C:\\Users\\Andreas\\projects\\TestData"
 
-def fb_get_sid(fritzbox, fritz_user, fritz_pw):
+def get_fb_sid(fritzbox, fritz_user, fritz_pw):
     fb_sid=NOT_VALID_SID
     if fb_sid == "0000000000000000":
         session = requests.Session()
@@ -66,6 +67,9 @@ def get_struct(x, level=0, struct=[]):
     return struct
 
 def get_log_from_fb(fb_sid=None, file=None):
+    """
+        getting logfile from frtzbox / store it in file 
+    """
     url=ROUTER_URL+'/data.lua'
     path=DATA_DIR+os.sep+file
     payload={
@@ -81,36 +85,7 @@ def get_log_from_fb(fb_sid=None, file=None):
             f.write(log)
     return
 
-def get_log_from_fbXXX(fb_sid=None, file=None):
-    """
-        get log from fritzbox and write it to 'file' or return the log
-    """
-    if fb_sid and file:
-        path=DATA_DIR+os.sep+file
-        cmd='wget -q -O - --post-data="sid=' + fb_sid + '&lang=de&page=log&no_sidrenew=" http://xyzrouter.internal/data.lua'
-        xs=subprocess.check_output(cmd, shell=True, executable="/bin/bash",text=True) 
-        with open(path, 'w') as f:
-            f.write(cmd)
-        msg="data written to" + path
-    elif fb_sid and not file:
-        cmd='wget -q -O - --post-data="sid=' + fb_sid + '&lang=de&page=log&no_sidrenew=" http://xyzrouter.internal/data.lua'
-        xs=subprocess.check_output(cmd, shell=True, executable="/bin/bash",text=True) 
-        msg=json.loads(xs)
-    else:
-        msg="error in arguments"
-
-    #for i in get_struct(x):
-    #    print(i)
-    #log=[]
-    #for key1 in x.keys():
-    #    if key1=='data':
-    #        for key2 in x[key1].keys():
-    #            if key2 == 'log':
-    #                for x in x[key1][key2]:
-    #                    log.append(f'{x['date']} {x['time']} {x['group']:>4} {x['msg']}')
-    return(msg)
-
-def get_data_from_file(file):
+def get_log_from_file(file):
     """ 
         reading json data from file 
     """
@@ -121,14 +96,27 @@ def get_data_from_file(file):
 
 def main():
     ### get log from fritzbox
-    #sid = fb_get_sid(ROUTER_URL, USER, PASSWORD)
+    #sid = get_fb_sid(ROUTER_URL, USER, PASSWORD)
     #log=get_log_from_fb(fb_sid=sid)
     #get_log_from_fb(fb_sid=sid, file='fritz_log.json')
     ### get log from file
-    log=get_data_from_file('fritz_log.json')
+    log=get_log_from_file('fritz_log.json')
     p_object=json.loads(log)
     for item in get_struct(p_object):
         print(item)
+
+    ### formating log entries
+    #for i in get_struct(x):
+    #    print(i)
+    #log=[]
+    #for key1 in x.keys():
+    #    if key1=='data':
+    #        for key2 in x[key1].keys():
+    #            if key2 == 'log':
+    #                for x in x[key1][key2]:
+    #                    log.append(f'{x['date']} {x['time']} {x['group']:>4} {x['msg']}')
+
+
 
 if __name__ == '__main__':
     main()
