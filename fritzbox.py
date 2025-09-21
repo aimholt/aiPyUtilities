@@ -1,19 +1,16 @@
 import urllib3
 import xml.etree.ElementTree as ET
 import hashlib
-import subprocess
 import requests
 import json
-import pandas as pd
-import os
-import sys
+import os, sys
 
 ROUTER_URL =    "http://xyzrouter.internal"
 USER =          "aimholt"  # Anmeldename z. B. fritz1234
 PASSWORD =      "Imh2And-01"  # Anmeldekennwort
 NOT_VALID_SID = "0000000000000000" # immer ungueltig
-DATA_DIR =  "/home/aimholt/projects/TestData"
-if sys.platform != 'linux': 
+DATA_DIR =      "/home/aimholt/projects/TestData"
+if sys.platform != 'linux':
     DATA_DIR =  "C:\\Users\\Andreas\\projects\\TestData"
 
 def get_fb_sid(fritzbox, fritz_user, fritz_pw):
@@ -24,7 +21,7 @@ def get_fb_sid(fritzbox, fritz_user, fritz_pw):
         data = http.request("get", fritzbox + "/login_sid.lua").data
         tree = ET.fromstring(data)
         fb_sid = tree.findtext("SID")
-        if fb_sid == "0000000000000000":
+        if fb_sid == NOT_VALID_SID:
             challenge = tree.findtext("Challenge")
             hash_me = (challenge + "-" + fritz_pw).encode("UTF-16LE")
             hashed = hashlib.md5(hash_me).hexdigest()
@@ -35,8 +32,8 @@ def get_fb_sid(fritzbox, fritz_user, fritz_pw):
             }, verify=False, timeout=5)
             tree = ET.fromstring(ret.text)
             fb_sid = tree.findtext("SID")
-            if fb_sid == "0000000000000000":
-                print("fb_get_sid: Fehler beim Abrufen der SID")
+            if fb_sid == NOT_VALID_SID:
+                print("get_fb_sid: Fehler beim Abrufen der SID")
                 exit()
     return fb_sid
 
@@ -68,10 +65,11 @@ def get_struct(x, level=0, struct=[]):
 
 def get_log_from_fb(fb_sid=None, file=None):
     """
-        getting logfile from frtzbox / store it in file 
+        delivers fritzbox logfile in json format / store it in file 
     """
     url=ROUTER_URL+'/data.lua'
-    path=DATA_DIR+os.sep+file
+    if file:
+        path=DATA_DIR+os.sep+file
     payload={
         'sid':          fb_sid,
         'lang':         'de',
@@ -80,10 +78,16 @@ def get_log_from_fb(fb_sid=None, file=None):
         }
     resp=requests.post(url,data=payload)
     if resp.status_code == 200 or resp.status_code == 200:
-        log=resp.text
-        with open(path, 'w') as f:
-            f.write(log)
-    return
+        body_py_obj=resp.json()
+        if file:
+            with open(path, 'w') as file:
+                json.dump(body_py_obj, file, separators=(',', ': '), indent=2)
+            file.close()
+            msg='json logfile stored in file'
+        else:
+            msg=json.dumps(body_py_obj, separators=(',', ': '), indent=2)
+
+    return msg
 
 def get_log_from_file(file):
     """ 
@@ -95,28 +99,31 @@ def get_log_from_file(file):
     return s_var
 
 def main():
-    ### get log from fritzbox
-    #sid = get_fb_sid(ROUTER_URL, USER, PASSWORD)
-    #log=get_log_from_fb(fb_sid=sid)
-    #get_log_from_fb(fb_sid=sid, file='fritz_log.json')
-    ### get log from file
-    log=get_log_from_file('fritz_log.json')
-    p_object=json.loads(log)
-    for item in get_struct(p_object):
-        print(item)
+    opt='e'     # r: refresh log file from fritzbox
+                # a: analyse log
+                # s: show output,
+                # e: experimental
 
-    ### formating log entries
-    #for i in get_struct(x):
-    #    print(i)
-    #log=[]
-    #for key1 in x.keys():
-    #    if key1=='data':
-    #        for key2 in x[key1].keys():
-    #            if key2 == 'log':
-    #                for x in x[key1][key2]:
-    #                    log.append(f'{x['date']} {x['time']} {x['group']:>4} {x['msg']}')
-
-
-
+    if      opt == 'r':
+        sid = get_fb_sid(ROUTER_URL, USER, PASSWORD)
+        msg=get_log_from_fb(fb_sid=sid, file='fritz_log.json')
+        print(msg)
+    elif    opt == 'a':
+        log=get_log_from_file('fritz_log.json')
+        p_object=json.loads(log)
+        for item in get_struct(p_object):
+            print(item)
+    elif    opt == 's':
+        log=get_log_from_file('fritz_log.json')
+        x=json.loads(log)
+        for key1 in x.keys():
+            if key1=='data':
+                for key2 in x[key1].keys():
+                    if key2 == 'log':
+                        for x in x[key1][key2]:
+                            print(f'{x['date']} {x['time']} {x['group']:>4} {x['msg']}')
+    elif    opt == 'e':        
+        log=get_log_from_file('fritz_log.json')
+        print(log)
 if __name__ == '__main__':
     main()
