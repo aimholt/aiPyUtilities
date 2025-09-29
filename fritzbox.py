@@ -4,6 +4,7 @@ import hashlib
 import requests
 import json
 import os, sys
+import re
 
 ROUTER_URL =    "http://xyzrouter.internal"
 USER =          "aimholt"  # Anmeldename z. B. fritz1234
@@ -63,13 +64,14 @@ def get_struct(x, level=0, struct=[]):
             level-=1
     return struct
 
-def get_log_from_fb(fb_sid=None, file=None):
+def get_log_from_fb(fb_sid=None, filename=None):
     """
         delivers fritzbox logfile in json format / store it in file 
     """
     url=ROUTER_URL+'/data.lua'
-    if file:
-        path=DATA_DIR+os.sep+file
+    if filename:
+        path=DATA_DIR+os.sep+filename
+    
     payload={
         'sid':          fb_sid,
         'lang':         'de',
@@ -78,14 +80,14 @@ def get_log_from_fb(fb_sid=None, file=None):
         }
     resp=requests.post(url,data=payload)
     if resp.status_code == 200 or resp.status_code == 200:
-        body_py_obj=resp.json()
-        if file:
+        body_py=resp.json()
+        if filename:
             with open(path, 'w') as file:
-                json.dump(body_py_obj, file, separators=(',', ': '), indent=2)
+                json.dump(body_py, file, separators=(',', ': '), indent=2)
             file.close()
-            msg='json logfile stored in file'
+            msg=f'json logfile stored in file "{filename}"'
         else:
-            msg=json.dumps(body_py_obj, separators=(',', ': '), indent=2)
+            msg=json.dumps(body_py, separators=(',', ': '), indent=2)
 
     return msg
 
@@ -99,14 +101,14 @@ def get_log_from_file(file):
     return s_var
 
 def main():
-    opt='e'     # r: refresh log file from fritzbox
-                # a: analyse log
-                # s: show output,
+    opt='s'     # r: get log(json-format) from fb to sdtout or file if given
+                # a: analyse log structure
+                # s: search log with either native string or regEx,
                 # e: experimental
 
     if      opt == 'r':
         sid = get_fb_sid(ROUTER_URL, USER, PASSWORD)
-        msg=get_log_from_fb(fb_sid=sid, file='fritz_log.json')
+        msg=get_log_from_fb(fb_sid=sid, filename='fritz_log.json')
         print(msg)
     elif    opt == 'a':
         log=get_log_from_file('fritz_log.json')
@@ -114,14 +116,26 @@ def main():
         for item in get_struct(p_object):
             print(item)
     elif    opt == 's':
-        log=get_log_from_file('fritz_log.json')
-        x=json.loads(log)
-        for key1 in x.keys():
-            if key1=='data':
-                for key2 in x[key1].keys():
-                    if key2 == 'log':
-                        for x in x[key1][key2]:
-                            print(f'{x['date']} {x['time']} {x['group']:>4} {x['msg']}')
+        log_json=get_log_from_file('fritz_log.json')
+        log_py=json.loads(log_json)
+        re_search=True
+        pattern_input="^..\.09\.25 12"
+        if re_search:
+            try:
+                pattern=re.compile(pattern_input)
+            except:
+                print(f'error in regEx; performing normal string-search for "{pattern_input}"')
+                pattern=re.compile(re.escape(pattern_input))
+        else:
+            pattern=re.escape(pattern_input)
+        for item in log_py['data']['log']:
+            log_entry=f'{item['date']} {item['time']} {item['group']:>4} {item['msg']}'
+            if      re_search == True:      # re input
+                if re.search(pattern, log_entry):
+                    print(f'{log_entry}')
+            elif    re_search == False:     # not re input
+                if re.search(pattern, log_entry, re.IGNORECASE):
+                    print(f'{log_entry}')
     elif    opt == 'e':        
         log=get_log_from_file('fritz_log.json')
         print(log)
