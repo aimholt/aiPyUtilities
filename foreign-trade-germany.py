@@ -2,10 +2,11 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from aipy.pd_extensions import df_col_check
+from aiPyExtensions.pd_extensions import df_col_check
+import os
 
 ### reading dataset to DF
-df=pd.read_csv('TestData\\aussenhandel_deutschland.csv',sep=';', decimal=',')
+df=pd.read_csv('TestData'+os.sep+'aussenhandel_deutschland.csv',sep=';', decimal=',')
 
 countries=['Vereinigtes Königreich']
 ccountries=[
