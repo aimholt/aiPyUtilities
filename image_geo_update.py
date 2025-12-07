@@ -4,7 +4,7 @@
 import sys
 import os
 from argparse import ArgumentParser
-from aiPyExtensions.img_extensions import get_file_list, get_geo_from_gpx, get_img_timestamp, \
+from aiPyUtilsPack.img_extensions import get_file_list, get_geo_from_gpx, get_img_timestamp, \
                                 set_geo2exif, print_exif_data
 
 TZONE='Europe/Berlin'

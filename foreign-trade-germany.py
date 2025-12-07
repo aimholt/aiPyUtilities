@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from aiPyExtensions.pd_extensions import df_col_check
+from aiPyUtilsPack.pd_extensions import df_col_check
 import os
 
 ### reading dataset to DF
