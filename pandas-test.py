@@ -19,7 +19,7 @@ def gen_df():
         "F": np.random.randint(0,10000,24), # using a list of random values 
         "G": np.random.randint(0,10000,24), # using a list of random values
         "H": [datetime.datetime(2023, i, 1) for i in range(1, 13)]+\
-            [datetime.datetime(2023, i, 15) for i in range(1, 13)]
+            [datetime.datetime(2023, i, 15) for i in range(1, 13)] # using a list with 24 datetime values
         })
     return df
 
@@ -37,7 +37,7 @@ def sample_pivot(df):
 
 if __name__ == '__main__':
     df=gen_df()
-    print(df.info())
-    print(df.describe())
-    print(df)
-    print(sample_pivot(df))
+    print(f'>> df.info(): {df.info()}')
+    print(f'>> df.describe(): {df.describe()}')
+    print(f'>> df: {df}')
+    print(f'>> sample_pivot(df): {sample_pivot(df)}')

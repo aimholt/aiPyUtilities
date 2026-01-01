@@ -5,19 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-            rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-            crossorigin="anonymous">
+    <link rel="stylesheet" href="static-styles/css/bootstrap.min.css">
 </head>
 <body class="mx-2 bg-light">
     <dev class="container">
         <p class="bg-warning text-primary text-center h1 m-0">myHomePage</p>
     </dev>
-
     <!-- Navbar BASED ON : https://getbootstrap.com/docs/5.3/components/navbar/ -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary " data-bs-theme="dark" >
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">xyzHome</a>
+            <a class="navbar-brand" href="#">xyzHome</a></a><i class="bi bi-skip-start"></i>
             <button class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
@@ -30,25 +27,26 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item m-1">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active text-warning" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item m-1">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link text-warning" href="#">Link</a>
                     </li>
                     <li class="nav-item dropdown m-1">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+                        <a  class="nav-link dropdown-toggle text-warning"
+                            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><a class="dropdown-item text-warning" href="#">Action</a></li>
+                            <li><a class="dropdown-item text-warning" href="#">Another action</a></li>
+                            <li><hr class="dropdown-divider text-warning"></li>
+                            <li><a class="dropdown-item text-warning" href="#">Something else here</a></li>
                         </ul>
                     </li>
                     <li class="nav-item m-1">
-                        <a class="nav-link" aria-disabled="true">Disabled</a>
+                        <a class="nav-link text-warning" aria-disabled="true">Disabled</a>
                     </li>
                     <li class="nav-item m-1">
-                        <a class="nav-link" href="#" aria-disabled="true">to right</a>
+                        <a class="nav-link text-warning" href="#" aria-disabled="true">to right</a>
                     </li>
                 </ul>
             
@@ -86,19 +84,12 @@
         </div>
     </div>
 
-<p class="m-5">
-Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quod, cupiditate ea! Culpa dicta in quam velit iusto? Odit delectus recusandae tempore quae debitis officiis eius, accusamus aliquam quod facilis excepturi!
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel blanditiis at cumque minus velit numquam repellendus iste quos perferendis consectetur dolore recusandae sint necessitatibus corporis, repudiandae architecto sunt maiores aperiam?    
-Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusantium sed illum dolorem debitis? Eaque, maxime obcaecati velit quos pariatur eos minima provident voluptate omnis nobis eum, vitae aliquam. Doloribus, harum?
-Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquid corporis voluptatibus, quasi, doloribus molestiae aliquam veniam, eos praesentium numquam accusamus nihil! Ratione quos minima placeat natus nisi praesentium. Accusamus, aperiam?
-Lorem ipsum, dolor sit amet consectetur adipisicing elit. Commodi ipsum officia incidunt earum exercitationem dicta fuga optio vitae expedita quae! Ratione quos aperiam illo dignissimos veritatis necessitatibus tempore, neque cum!
-Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum consequatur optio vero eveniet alias quae aspernatur voluptas nesciunt. Quibusdam quaerat consequatur id velit eligendi ab dignissimos voluptas quisquam aliquid rerum!
-Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloremque facilis earum vel ipsum sunt dicta eos expedita exercitationem nisi quaerat distinctio modi nam quos repellat eligendi repellendus, sint mollitia fugiat!
-Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus ratione doloremque earum a officia architecto quidem eligendi laudantium! Accusantium sint necessitatibus quas vel labore placeat, officiis consequatur laborum odit culpa?
-</p>
+<div class="w-50 position-absolute top-100 start-50 translate-middle bg-light border border-3 border-dark p-3 mt-5">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Error accusantium debitis, sit necessitatibus quia illo explicabo expedita porro modi aut iste suscipit iure ab blanditiis accusamus autem minus eum non soluta alias quam iusto. Quisquam iusto vel nesciunt voluptates natus totam obcaecati assumenda mollitia. Dolores magnam deserunt doloremque ullam repudiandae, soluta numquam aspernatur distinctio nobis ex harum adipisci cumque quae quidem, nisi voluptatem. Optio quis, iure assumenda sunt incidunt dolores molestias consequuntur cupiditate inventore nesciunt eaque, quia perferendis doloribus soluta impedit quisquam consectetur odit ex perspiciatis voluptas doloremque. Mollitia cupiditate ipsa necessitatibus cumque non? Consequuntur magnam maiores delectus eum officia.
+</div>
 
-    <!-- Offcanvas / Body scrolling and backdrop-->
-    <div    class="offcanvas offcanvas-start"
+<!-- Offcanvas / Body scrolling and backdrop-->
+    <div    class="offcanvas offcanvas-start bg-info"
             data-bs-scroll="true"
             tabindex="-1"
             id="offcanvasWithBothOptions"
@@ -120,9 +111,6 @@ Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus ratione dolor
     </div>
 
     <!-- Bootstrap 5 JavaScript Bundle (inkl. Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-            crossorigin="anonymous">
-    </script>
+    <script src="static-styles/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

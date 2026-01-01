@@ -3,9 +3,9 @@
 """
 import re
 
-def valid_ip(address):
+def valid_ip(address:any)->bool:
     """
-        validate a given IP address
+        validates a given IPv4 address
     """
     p=re.compile('^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$')
     m=p.match(address)

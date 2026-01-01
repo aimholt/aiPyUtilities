@@ -1,7 +1,6 @@
 """
     module for image processing extensions
 """
-
 import os
 import gpxpy
 import piexif
