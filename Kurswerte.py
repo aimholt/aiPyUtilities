@@ -4,7 +4,9 @@
 """
 import yfinance as yf
 
-MYSTOCK =[ 'LU0321021312',
+MYSTOCK =[
+    'DE0008471012',
+    'LU0321021312',
     'DE0009807016',
     'LU0061928585',
     'LU1136260384',
