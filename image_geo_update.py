@@ -10,7 +10,7 @@ from aiPyUtilsPack.img_extensions import get_file_list, get_geo_from_gpx, get_im
 TZONE='Europe/Berlin'
 ### platform dependend settings
 if sys.platform.startswith('linux'):
-    DIR='/home/aimholt/projects/TestData/pictures_tracklogs'
+    DIR='/home/anreas/projects/TestData/pictures_tracklogs'
 elif sys.platform.startswith('win'):
     DIR='C:\\Users\\Andreas\\projects\\TestData\\pictures_tracklogs'
 

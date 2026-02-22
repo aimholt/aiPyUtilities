@@ -10,7 +10,7 @@ ROUTER_URL =    "http://xyzrouter.internal"
 USER =          "aimholt"  # Anmeldename z. B. fritz1234
 PASSWORD =      "Imh2And-01"  # Anmeldekennwort
 NOT_VALID_SID = "0000000000000000" # immer ungueltig
-DATA_DIR =      "/home/aimholt/projects/TestData"
+DATA_DIR =      "/home/andreas/projects/testData"
 if sys.platform != 'linux':
     DATA_DIR =  "C:\\Users\\Andreas\\projects\\TestData"
 

@@ -6,7 +6,7 @@ from aiPyUtilsPack.pd_extensions import df_col_check
 import os
 
 ### reading dataset to DF
-df=pd.read_csv('TestData'+os.sep+'aussenhandel_deutschland.csv',sep=';', decimal=',')
+df=pd.read_csv('testData'+os.sep+'aussenhandel_deutschland.csv',sep=';', decimal=',')
 
 countries=['Vereinigtes Königreich']
 ccountries=[
