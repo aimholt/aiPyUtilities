@@ -1,7 +1,8 @@
 from aiPyUtilsPack.general import get_object_summary
 import json
+import os
 
-DIR='/home/aimholt/projects/TestData'
+DIR='/home/andreas/projects/testData'
 FILE='testdata.json'
 
 raw0 ='''
@@ -133,16 +134,8 @@ raw10='''
 }
 '''
 
-
-#print(raw)
-
-#with open('/home/aimholt/projects/TestData/fritz_log.json','r', encoding='UTF-8') as f:
-#    data_py=json.load(f)
-var=2
-data_py=json.loads(raw8)
-
-if    var == 1:
-  print(get_object_summary(data_py))
-elif  var == 2:
-  for item in get_object_summary(data_py):
+with open(DIR+os.sep+FILE,'r', encoding='UTF-8') as f:
+    data_py=json.load(f)
+#data_py=json.loads(raw8)
+for item in get_object_summary(data_py):
     print(item)
