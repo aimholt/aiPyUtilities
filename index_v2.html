@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>xyzHomePage</title>
+    <link rel="stylesheet" href="css/fontawesome.css">
     <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/styles.css">
+
 </head>
-<body class="mx-2 bg-light">
-    <dev class="container">
-        <p class="bg-warning text-primary text-center h1 m-0">myHomePage</p>
-    </dev>
+<body class="mx-1 bg-secondary">
     <!-- Navbar BASED ON : https://getbootstrap.com/docs/5.3/components/navbar/ -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary " data-bs-theme="dark" >
+    <nav class="navbar mx-1 navbar-expand-md fixed-top navbar-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">xyzHome</a></a><i class="bi bi-skip-start"></i>
+            <a class="navbar-brand " href="#">xyzHome<i class="fa-regular fa-house" style="color: hsl(0, 26%, 96%);"></i></a>
             <button class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
@@ -25,7 +25,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto my-0 mb-md-0">
                     <li class="nav-item m-1">
                         <a class="nav-link active text-warning" aria-current="page" href="#">Home</a>
                     </li>
@@ -50,7 +50,7 @@
                     </li>
                 </ul>
             
-            <!--search field integration
+            <!--search field integration - not used yet
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
                 <button class="btn btn-outline-success" type="submit">Search</button>
@@ -60,6 +60,9 @@
         </div>
     </nav>
     <!-- Navbar BASED ON : https://getbootstrap.com/docs/5.3/components/navbar/ -->
+    <header class="bg-primary text-bg-primary text-center h1 m-0">
+        <p class="pt-5 pb-2">xyzHome</p>
+    </header>
 
     <!-- grid responsive -->
     <div class="container-xxl text-center mt-2">
@@ -112,5 +115,6 @@
 
     <!-- Bootstrap 5 JavaScript Bundle (inkl. Popper) -->
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>

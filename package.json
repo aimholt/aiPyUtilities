@@ -1,0 +1,26 @@
+{
+  "name": "aipyutilities",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/aimholt/aiPyUtilities#readme",
+  "bugs": {
+    "url": "https://github.com/aimholt/aiPyUtilities/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aimholt/aiPyUtilities.git"
+  },
+  "license": "ISC",
+  "author": "Andreas Imholt",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "sass:build": "sass --no-source-map scss:css",
+    "sass:watch": "sass --no-source-map --watch scss:css"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "bootstrap": "^5.3.8",
+    "sass": "^1.98.0"
+  }
+}
