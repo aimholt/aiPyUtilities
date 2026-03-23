@@ -10,3 +10,13 @@
   opacity: 0.9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+
+.bg-header {
+  background: url(../images/wallpaper-1.jpg) center center no-repeat;
+  background-size: cover;
+}
+
+.bg-body {
+  background: url(../images/wallpaper-2.jpg) center center no-repeat;
+  background-size: cover;
+}
