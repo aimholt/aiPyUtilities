@@ -1,6 +1,7 @@
 """
-    problem: my camera has no gps so no location information is stored in the images
-    this program updates the geo coordinates in a .jpg image, when a geo tracking file is given
+    problem: camera that don't have gps don't store location information in the images !!!
+    this program updates the geo coordinates in a .jpg image, by using a geo tracking file,
+    that was tracked separately with a gps tracking tool (e.g. gpslogger for android)
     - working directory is given as argument
     - inside working directory image files and one or more gpx files are expected
     - it's not expected that the time stamp in an image file is exactly found in an gpx file
@@ -17,7 +18,7 @@ from aiPyUtilsPack.img_extensions import get_file_list, get_geo_from_gpx, get_im
 
 TZONE='Europe/Berlin'
 
-def main(max_time_diff=60):
+def main():
     parser=ArgumentParser(
         prog='image_geo_update',
         description='backend-tool to update image geo data with gps data from tracking tool')
@@ -31,31 +32,38 @@ def main(max_time_diff=60):
     parser.add_argument('-e', '--exif',
                 help='print current exif data',
                 action='store_true')
+    parser.add_argument('-m', '--max_time_diff',
+                help='set maximum time difference (in seconds) for matching image and gpx timestamps',
+                type=int, default=60)
     parser.add_argument('-s', '--save',
                 help='save changes to images',
                 action='store_true', default=False)
     parser.add_argument('-d', '--directory', required=True,
-                help='set working directory',
+                help='set working directory, where the image files and gpx files are located',
                 type=str)
     args=parser.parse_args()
 
-    working_dir=args.directory    
+    working_dir=args.directory
+    max_time_diff=args.max_time_diff
 
-    ### >>>>> check if directory exists and is readable and writable)
+    ### check if directory exists
     path=Path(working_dir)
     if not path.exists():
         sys.exit(f' Error: {path} does not exist')
     elif not path.is_dir():
         sys.exit(f' Error: {path} is not a directory')
     
+    ### build list with image file paths
     if args.all:
         img_fpath_list=get_file_list(dir=working_dir,m_pattern='^.*\\.(jpg)$')
     elif args.fname:
-        img_fpath_list.append(os.path.join(working_dir,args.fname))
-    
-    ### making gpx and image fpath list
+        img_fpath_list=[None]
+        img_fpath_list[0] = os.path.join(working_dir,args.fname)
+
+    ### build list with gpx file paths
     gpx_fpath_list=get_file_list(dir=working_dir,m_pattern='^.*\\.(gpx)$')
 
+    ### check if gpx files and image files are found in working directory
     if len(gpx_fpath_list) == 0:
         sys.exit(f' Error: no gpx file found in {working_dir}')
     elif len(img_fpath_list) == 0:
@@ -67,10 +75,12 @@ def main(max_time_diff=60):
     print(  f'number of gpx files in working directory: {len(gpx_fpath_list)}')
     print(  f'number of img files in working directory: {len(img_fpath_list)}')
     
+    ### build list with geo coordinates from gpx files and sorted by date
     for gpx_fpath in gpx_fpath_list:
         for geo_coordinate_item in get_geo_from_gpx(gpx_fpath):
             geo_coord_list.append(geo_coordinate_item)        
     geo_coord_list.sort(key=lambda x: x['dt'], reverse=False)
+    
     print(  f'number of geo entries found: {len(geo_coord_list)} - '
             f'oldest: {geo_coord_list[0]['dt']} - '
             f'newest: {geo_coord_list[len(geo_coord_list)-1]['dt']}')
@@ -84,6 +94,7 @@ def main(max_time_diff=60):
         coord_dt_before=None
         coord_dt_after=None
         if args.exif:
+            ### print exif data of image file
             print("\n>>>>>>>>>>>>>>>>>>>>>>>>> EXIF data of image: "+img_fname)
             print_exif_data(os.path.join(working_dir,img_fpath))
 
@@ -133,11 +144,10 @@ def main(max_time_diff=60):
                     f'COORD({coord_dt_after.date()} {coord_dt_after.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; +{time_diff_after}s)'
                 )
     if args.save:
-        print('>> changes saved to images')
+        print('>> geo coordinates saved to images')
     else:
-        print('>> nothing saved to images(only with option "-s")')
+        print('>> no updates saved to images(use "-s" switch to save the geo coordinates to the images)')
     return
 
 if __name__ == '__main__':
     main()
-exit()
