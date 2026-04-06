@@ -11,9 +11,13 @@ from fractions import Fraction
 
 TZONE='Europe/Berlin'
 
-def get_geo_from_gpx(fname):
+def get_geo_from_gpx(fname) -> list:
     """
         get all geo coordinates in a gpx file
+            - returns a list of dicts with the following keys:
+                - dt: datetime object of the gps entry
+                - lat: latitude of the gps entry
+                - lon: longitude of the gps entry
     """
     gpx = gpxpy.parse(open(fname, 'r'))
     gpx_by_date=[]
@@ -27,7 +31,7 @@ def get_geo_from_gpx(fname):
                     })
     return gpx_by_date
 
-def print_exif_data(path):
+def print_exif_data(path) -> None:
     """
         print all exif data of a image file
     """    
@@ -45,7 +49,7 @@ def print_exif_data(path):
                 print(' >> to long for dumping the elements')
     return
 
-def get_img_timestamp(fname):
+def get_img_timestamp(fname) -> datetime:
     """
         returns a datetime object of jpg timestamp
     """
@@ -57,7 +61,7 @@ def get_img_timestamp(fname):
     x_datetime=x_datetime.astimezone(tz=ZoneInfo(TZONE))
     return x_datetime
 
-def get_file_list(dir, m_pattern=''):
+def get_file_list(dir, m_pattern='') -> list:
     """
         returns a list of filenames filtered by patterns in the defined directory
     """
@@ -71,7 +75,7 @@ def get_file_list(dir, m_pattern=''):
             path_list.append(path)
     return path_list
 
-def deg_to_dms(coord_dec, type):
+def deg_to_dms(coord_dec, type) -> tuple:
     """ 
     this function converts decimal coordinates into the DMS (degrees, minutes and seconds) format.
     It also determines the cardinal direction of the coordinates.
@@ -97,7 +101,7 @@ def deg_to_dms(coord_dec, type):
     ##return int(deg), int(min), float(sec), direction
     return deg, min, sec, direction
 
-def dms_to_exif(dms_degrees, dms_minutes, dms_seconds):
+def dms_to_exif(dms_degrees, dms_minutes, dms_seconds) -> tuple:
     """
     This function converts DMS (degrees, minutes and seconds) to values that can
     be used with the EXIF (Exchangeable Image File Format).
@@ -115,7 +119,7 @@ def dms_to_exif(dms_degrees, dms_minutes, dms_seconds):
     )
     return exif_format
 
-def set_geo2exif(coord, img_path):
+def set_geo2exif(coord, img_path) -> None:
     """
     This function adds GPS values to an image using the EXIF format.
     This fumction calls the functions deg_to_dms and dms_to_exif_format.
