@@ -31,6 +31,9 @@ def main(max_time_diff=60):
     parser.add_argument('-e', '--exif',
                 help='print current exif data',
                 action='store_true')
+    parser.add_argument('-m', '--max_time_diff', default=max_time_diff,
+                help='set max time difference in seconds between image timestamp and gpx timestamp to consider a match (default: 60s)',
+                type=int)
     parser.add_argument('-s', '--save',
                 help='save changes to images',
                 action='store_true', default=False)
