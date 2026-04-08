@@ -9,7 +9,7 @@ import json
 if sys.platform.startswith('linux'):
     DATADIR =  "/home/andreas/projects/testData"
 else:
-    DATADIR = "C:\\Users\\Andreas\\projects\\testData"
+    DATADIR = "C:\\Users\\Andreas\\projects\\TestData"
 
 FILENAME = "mystock.json"
 

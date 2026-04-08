@@ -12,7 +12,7 @@ PASSWORD =      "Imh2And-01"  # Anmeldekennwort
 NOT_VALID_SID = "0000000000000000" # immer ungueltig
 DATA_DIR =      "/home/andreas/projects/testData"
 if sys.platform != 'linux':
-    DATA_DIR =  "C:\\Users\\Andreas\\projects\\TestData"
+    DATA_DIR =  "C:\\Users\\Andreas\\projects\\testData"
 
 def get_fb_sid(fritzbox, fritz_user, fritz_pw):
     fb_sid=NOT_VALID_SID
