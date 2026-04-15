@@ -1,3 +1,6 @@
+//
+// own custom css styles
+//
 .navbar .btn-outline-light:hover {
   color: var(--bs-dark);
 }
@@ -7,9 +10,9 @@
 }
 
 .navbar-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 1020;
+// position: sticky;
+//  top: 0;
+//  z-index: 1020;
   opacity: 0.9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
