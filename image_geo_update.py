@@ -87,6 +87,7 @@ def main():
 
     ### for each fpath open and read the timestamp
     count=0
+    found_cnt=0
     for img_fpath in img_fpath_list:
         img_dt=get_img_timestamp(img_fpath)
         img_fname=img_fpath.lstrip(working_dir)
@@ -121,6 +122,7 @@ def main():
             ### set coords to image fpath
             if args.save:
                 set_geo2exif(coord, img_fpath)
+            found_cnt+=1
             found=False
         elif not found:
             if  coord_dt_before != None:
@@ -131,6 +133,7 @@ def main():
                 time_diff_before <= time_diff_after:
                 if args.save:
                     set_geo2exif(coord, img_fpath)
+                found_cnt+=1
                 print(
                     f'{img_fname:<20s} IMG({img_dt.date()} {img_dt.time()}) - '
                     f'COORD({coord_dt_before.date()} {coord_dt_before.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; -{time_diff_before}s)'
@@ -139,10 +142,15 @@ def main():
                 time_diff_before > time_diff_after:
                 if args.save:
                     set_geo2exif(coord, img_fpath)
+                found_cnt+=1
                 print(
                     f'{img_fname:<20s} IMG({img_dt.date()} {img_dt.time()}) - '
                     f'COORD({coord_dt_after.date()} {coord_dt_after.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; +{time_diff_after}s)'
                 )
+    print(  f'\n>> number of images found for geo data update' 
+            f' (timestamp diff. not > {max_time_diff} sec.): {found_cnt} / {count}'
+        )
+
     if args.save:
         print('>> geo coordinates saved to images')
     else:
