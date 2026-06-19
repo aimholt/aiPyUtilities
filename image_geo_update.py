@@ -14,7 +14,7 @@ import sys
 import os
 from argparse import ArgumentParser
 from aiPyUtilsPack.img_extensions import get_file_list, get_geo_from_gpx, get_img_timestamp, \
-    set_geo2exif, print_exif_data
+    set_geo2exif, print_exif_data, img_geo_data_exits
 
 TZONE='Europe/Berlin'
 
@@ -31,6 +31,9 @@ def main():
                 action='store_true')
     parser.add_argument('-e', '--exif',
                 help='print current exif data',
+                action='store_true')
+    parser.add_argument('-i', '--inverse',
+                help='print image files not matching timestamp criterias',
                 action='store_true')
     parser.add_argument('-m', '--max_time_diff',
                 help='set maximum time difference (in seconds) for matching image and gpx timestamps',
@@ -81,74 +84,85 @@ def main():
             geo_coord_list.append(geo_coordinate_item)        
     geo_coord_list.sort(key=lambda x: x['dt'], reverse=False)
     
-    print(  f'number of geo entries found: {len(geo_coord_list)} - '
+    print(  f'number of geo entries in gpx files: {len(geo_coord_list)} ('
             f'oldest: {geo_coord_list[0]['dt']} - '
-            f'newest: {geo_coord_list[len(geo_coord_list)-1]['dt']}')
+            f'newest: {geo_coord_list[len(geo_coord_list)-1]['dt']})')
 
-    ### for each fpath open and read the timestamp
+    ### for each fpath open, check if geo-data exists and read the timestamp
     count=0
     found_cnt=0
+    img_with_geo_data_cnt=0
+    img_without_geo_data_cnt=0
     for img_fpath in img_fpath_list:
-        img_dt=get_img_timestamp(img_fpath)
-        img_fname=img_fpath.lstrip(working_dir)
-        found=False
-        coord_dt_before=None
-        coord_dt_after=None
-        if args.exif:
-            ### print exif data of image file
-            print("\n>>>>>>>>>>>>>>>>>>>>>>>>> EXIF data of image: "+img_fname)
-            print_exif_data(os.path.join(working_dir,img_fpath))
+        if not img_geo_data_exits(img_fpath):
+            img_without_geo_data_cnt+=1
 
-        ### for each image find the best time matches in geo coordinates
-        time_diff_before=max_time_diff
-        time_diff_after=max_time_diff
-        count+=1
-        for coord in geo_coord_list:
-            if      coord['dt'] < img_dt:
-                coord_dt_before=coord['dt']
-            elif    coord['dt'] == img_dt:
-                found=True
-                break
-            elif    coord['dt'] > img_dt:
-                coord_dt_after=coord['dt']
-                break
-
-        ### handling of time matches and no time matches
-        if found:
-            print(
-                f'{img_fname:<20s} IMG({img_dt.date()} {img_dt.time()}) - ' 
-                f'COORD({coord['dt'].date()} {coord['dt'].time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f};  0s)'
-                )
-            ### set coords to image fpath
-            if args.save:
-                set_geo2exif(coord, img_fpath)
-            found_cnt+=1
+            img_dt=get_img_timestamp(img_fpath)
+            img_fname=img_fpath.lstrip(working_dir)
             found=False
-        elif not found:
-            if  coord_dt_before != None:
-                time_diff_before = (img_dt - coord_dt_before).seconds
-            if  coord_dt_after != None:
-                time_diff_after = (coord_dt_after - img_dt).seconds
-            if  (time_diff_before < max_time_diff or time_diff_after  < max_time_diff)  and \
-                time_diff_before <= time_diff_after:
-                if args.save:
-                    set_geo2exif(coord, img_fpath)
-                found_cnt+=1
+            coord_dt_before=None
+            coord_dt_after=None
+            if args.exif:
+                ### print exif data of image file
+                print("\n>>>>>>>>>>>>>>>>>>>>>>>>> EXIF data of image: "+img_fname)
+                print_exif_data(os.path.join(working_dir,img_fpath))
+
+            ### for each image find the best time matches in geo coordinates
+            time_diff_before=max_time_diff
+            time_diff_after=max_time_diff
+            count+=1
+            for coord in geo_coord_list:
+                if      coord['dt'] < img_dt:
+                    coord_dt_before=coord['dt']
+                elif    coord['dt'] == img_dt:
+                    found=True
+                    break
+                elif    coord['dt'] > img_dt:
+                    coord_dt_after=coord['dt']
+                    break
+
+            ### handling of time matches and no time matches
+            if found:
                 print(
-                    f'{img_fname:<20s} IMG({img_dt.date()} {img_dt.time()}) - '
-                    f'COORD({coord_dt_before.date()} {coord_dt_before.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; -{time_diff_before}s)'
+                    f'{found_cnt:3d}: {img_fname:<20s} IMG({img_dt.date()} {img_dt.time()}) - ' 
+                    f'COORD({coord['dt'].date()} {coord['dt'].time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f};  0s)'
                     )
-            elif(time_diff_before < max_time_diff or time_diff_after  < max_time_diff)  and \
-                time_diff_before > time_diff_after:
+                ### set coords to image fpath
                 if args.save:
                     set_geo2exif(coord, img_fpath)
                 found_cnt+=1
-                print(
-                    f'{img_fname:<20s} IMG({img_dt.date()} {img_dt.time()}) - '
-                    f'COORD({coord_dt_after.date()} {coord_dt_after.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; +{time_diff_after}s)'
-                )
-    print(  f'\n>> number of images found for geo data update' 
-            f' (timestamp diff. not > {max_time_diff} sec.): {found_cnt} / {count}'
+                found=False
+            elif not found:
+                # wenn coord time 
+                if  coord_dt_before != None:
+                    time_diff_before = (img_dt - coord_dt_before).seconds
+                if  coord_dt_after != None:
+                    time_diff_after = (coord_dt_after - img_dt).seconds
+                if  (time_diff_before < max_time_diff or time_diff_after  < max_time_diff)  and \
+                    time_diff_before <= time_diff_after:
+                    if args.save:
+                        set_geo2exif(coord, img_fpath)
+                    found_cnt+=1
+                    print(
+                        f'{found_cnt:3d}: {img_fname:<20s} IMG({img_dt.date()} {img_dt.time()}) - '
+                        f'COORD({coord_dt_before.date()} {coord_dt_before.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; -{time_diff_before}s)'
+                        )
+                if(time_diff_before < max_time_diff or time_diff_after  < max_time_diff)  and \
+                    time_diff_before > time_diff_after:
+                    if args.save:
+                        set_geo2exif(coord, img_fpath)
+                    found_cnt+=1
+                    print(
+                        f'{found_cnt:3d}: {img_fname:<20s} IMG({img_dt.date()} {img_dt.time()}) - '
+                        f'COORD({coord_dt_after.date()} {coord_dt_after.time()}; LAT: {coord['lat']:9.6f}; LON: {coord['lon']:9.6f}; +{time_diff_after}s)'
+                    )
+        elif img_geo_data_exits(img_fpath):
+            img_with_geo_data_cnt+=1
+    print(  f'>> number of images found with/without geo data: ' 
+            f'{img_with_geo_data_cnt}/{img_without_geo_data_cnt}'
+        )
+    print(  f'>> number of images found for geo data update' 
+            f' (timestamp diff. not > {max_time_diff} sec.): {found_cnt} / {count}; see list above'
         )
 
     if args.save:

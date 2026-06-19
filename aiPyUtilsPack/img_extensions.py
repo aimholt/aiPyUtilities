@@ -61,6 +61,16 @@ def get_img_timestamp(fname) -> datetime:
     x_datetime=x_datetime.astimezone(tz=ZoneInfo(TZONE))
     return x_datetime
 
+def img_geo_data_exits(fname) -> bool:
+    """
+        returns yes if the image file has geo data in the exif data, otherwise no
+    """
+    exif_dict = piexif.load(fname)
+    if 'GPS' in exif_dict and exif_dict['GPS']:
+        return True
+    else:
+        return False
+
 def get_file_list(dir, m_pattern='') -> list:
     """
         returns a list of filenames filtered by patterns in the defined directory
